@@ -1,0 +1,676 @@
+1.   SELECT ACC.CUSTOMER_ID, ACC.ACCOUNT_TYPE, ACC.ACCOUNT_NO, BAN.BANK_NAME
+FROM ACCOUNT_INFO ACC, BANK_INFO BAN
+WHERE ACC.IFSC_CODE = BAN.IFSC_CODE;
+
+
+CUSTO ACCOUNT_TY ACCOUNT_NO BANK_NAME
+----- ---------- ---------- -------------------------
+C-004 SALARY     1.2346E+15 HDFC
+C-001 SAVINGS    1.2346E+15 HDFC
+C-002 SALARY     1.2346E+15 SBI
+C-003 SAVINGS    1.2346E+15 ICICI
+C-005 SAVINGS    1.2346E+15 SBI
+
+
+
+
+2.
+SELECT ACC.CUSTOMER_ID, ACC.ACCOUNT_TYPE, ACC.ACCOUNT_NO
+FROM ACCOUNT_INFO ACC, BANK_INFO BAN
+WHERE ACC.IFSC_CODE = BAN.IFSC_CODE
+AND BANK_NAME='HDFC'
+AND ACC.REGISTRATION_DATE BETWEEN '12-JAN-12' AND '04-APR-12';
+
+CUSTO ACCOUNT_TY ACCOUNT_NO
+----- ---------- ----------
+C-001 SAVINGS    1.2346E+15
+
+
+
+
+3.
+SELECT CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, BAN.BANK_NAME
+FROM BANK_INFO BAN
+INNER JOIN ACCOUNT_INFO ACC
+ON BAN.IFSC_CODE=ACC.IFSC_CODE
+INNER JOIN CUSTOMER_PERSONAL_INFO CUS
+ON CUS.CUSTOMER_ID=ACC.CUSTOMER_ID
+WHERE ACC.ACCOUNT_NO IS NOT NULL;
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+----- ------------------------------ ---------- ----------
+BANK_NAME
+-------------------------
+C-001 JOHN                           1.2346E+15 SAVINGS
+HDFC
+
+C-002 JAMES                          1.2346E+15 SALARY
+SBI
+
+C-003 SUNITHA                        1.2346E+15 SAVINGS
+ICICI
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+----- ------------------------------ ---------- ----------
+BANK_NAME
+-------------------------
+C-004 RAMESH                         1.2346E+15 SALARY
+HDFC
+
+C-005 KUMAR                          1.2346E+15 SAVINGS
+SBI
+
+
+4.
+
+SELECT  CUSTOMER_ID,
+	CUSTOMER_NAME,
+	GENDER,
+	MARITAL_STATUS,
+	CUSTOMER_NAME||'_'||GENDER||'_'||MARITAL_STATUS UNIQUE_REF_STRING
+FROM CUSTOMER_PERSONAL_INFO
+ORDER BY CUSTOMER_ID DESC;
+
+CUSTO CUSTOMER_NAME                  G MARITAL_ST
+----- ------------------------------ - ----------
+UNIQUE_REF_STRING
+-------------------------------------------
+C-005 KUMAR                          M SINGLE
+KUMAR_M_SINGLE
+
+C-004 RAMESH                         M MARRIED
+RAMESH_M_MARRIED
+
+C-003 SUNITHA                        F SINGLE
+SUNITHA_F_SINGLE
+
+
+CUSTO CUSTOMER_NAME                  G MARITAL_ST
+----- ------------------------------ - ----------
+UNIQUE_REF_STRING
+-------------------------------------------
+C-002 JAMES                          M MARRIED
+JAMES_M_MARRIED
+
+C-001 JOHN                           M SINGLE
+JOHN_M_SINGLE
+
+5.
+SELECT ACCOUNT_NO, CUSTOMER_ID, REGISTRATION_DATE, INITIAL_DEPOSIT
+FROM ACCOUNT_INFO
+WHERE INITIAL_DEPOSIT BETWEEN '15000' AND '25000';
+
+
+ACCOUNT_NO CUSTO REGISTRAT INITIAL_DEPOSIT
+---------- ----- --------- ---------------
+1.2346E+15 C-003 15-MAR-12           16000
+1.2346E+15 C-005 12-APR-12           20000
+
+6.
+SELECT CUSTOMER_ID, CUSTOMER_NAME, DATE_OF_BIRTH, GUARDIAN_NAME
+FROM CUSTOMER_PERSONAL_INFO
+WHERE CUSTOMER_NAME LIKE 'J%';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+C-001 JOHN                           03-MAY-84 PETER
+C-002 JAMES                          06-AUG-84 GEORGE
+
+
+7.
+
+SELECT CUSTOMER_ID, ACCOUNT_NO, SUBSTR(CUSTOMER_ID,-3)||SUBSTR(ACCOUNT_NO,-4) PASSCODE 
+FROM ACCOUNT_INFO;
+
+CUSTO ACCOUNT_NO PASSCOD
+----- ---------- -------
+C-001 1.2346E+15 0015432
+C-002 1.2346E+15 0025433
+C-003 1.2346E+15 0035434
+C-004 1.2346E+15 0045435
+C-005 1.2346E+15 0055436
+
+
+8.
+
+SELECT CUSTOMER_ID, CUSTOMER_NAME, DATE_OF_BIRTH, MARITAL_STATUS, GENDER, GUARDIAN_NAME, CONTACT_NO, MAIL_ID
+FROM CUSTOMER_PERSONAL_INFO
+WHERE GENDER='M' 
+AND MARITAL_STATUS='MARRIED';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B MARITAL_ST G
+----- ------------------------------ --------- ---------- -
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID
+------------------------------ ---------- ------------------------------
+C-002 JAMES                          06-AUG-84 MARRIED    M
+GEORGE                         9237893481 JAMES_123@gmail.com
+
+C-004 RAMESH                         11-DEC-85 MARRIED    M
+KRISHNAN                       9235234534 RAMESH_123@gmail.com
+
+9.
+
+SELECT CUSP.CUSTOMER_ID, CUSP.CUSTOMER_NAME, CUSP.GUARDIAN_NAME, CUSR.REFERENCE_ACC_NAME FRIEND
+FROM CUSTOMER_PERSONAL_INFO CUSP, CUSTOMER_REFERENCE_INFO CUSR
+WHERE CUSP.CUSTOMER_ID=CUSR.CUSTOMER_ID;
+
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+FRIEND
+--------------------
+C-001 JOHN                           PETER
+RAM
+
+C-002 JAMES                          GEORGE
+RAGHUL
+
+C-003 SUNITHA                        VINOD
+GOKUL
+
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+FRIEND
+--------------------
+C-004 RAMESH                         KRISHNAN
+RAHMAN
+
+C-005 KUMAR                          KIRAN
+VIVEK
+
+
+10.
+
+SELECT CUSTOMER_ID, ACCOUNT_NO, CONCAT('$',ROUND(INTEREST,0)) INTEREST_AMT
+FROM ACCOUNT_INFO
+ORDER BY INTEREST;
+
+CUSTO ACCOUNT_NO INTEREST_AMT
+----- ---------- -----------------------------------------
+C-003 1.2346E+15 $4
+C-001 1.2346E+15 $5
+C-002 1.2346E+15 $6
+C-004 1.2346E+15 $7
+C-005 1.2346E+15 $8
+
+11.
+
+SELECT ACC.CUSTOMER_ID,
+	 CUS.CUSTOMER_NAME,
+	 ACC.ACCOUNT_NO,
+	 ACC.ACCOUNT_TYPE,
+	 ACC.ACTIVATION_DATE,
+	 BAN.BANK_NAME
+FROM ACCOUNT_INFO ACC JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE = BAN.IFSC_CODE
+JOIN CUSTOMER_PERSONAL_INFO CUS
+ON ACC.CUSTOMER_ID = CUS.CUSTOMER_ID
+AND ACC.ACTIVATION_DATE = '10-APR-12';
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY ACTIVATIO
+----- ------------------------------ ---------- ---------- ---------
+BANK_NAME
+-------------------------
+C-004 RAMESH                         1.2346E+15 SALARY     10-APR-12
+HDFC
+
+12.
+
+SELECT ACC.ACCOUNT_NO,
+	ACC.CUSTOMER_ID,
+	CUS.CUSTOMER_NAME,
+	BAN.BANK_NAME,
+	BAN.BRANCH_NAME,
+	ACC.IFSC_CODE,
+	CUS.CITIZENSHIP,
+	ACC.INTEREST,
+	ACC.INITIAL_DEPOSIT
+FROM ACCOUNT_INFO ACC JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE = BAN.IFSC_CODE
+JOIN CUSTOMER_PERSONAL_INFO CUS
+ON ACC.CUSTOMER_ID = CUS.CUSTOMER_ID ;
+
+
+
+ACCOUNT_NO CUSTO CUSTOMER_NAME                  BANK_NAME
+---------- ----- ------------------------------ -------------------------
+BRANCH_NAME               IFSC_CODE  CITIZENSHI   INTEREST INITIAL_DEPOSIT
+------------------------- ---------- ---------- ---------- ---------------
+1.2346E+15 C-001 JOHN                           HDFC
+VALASARAVAKKAM            HDVL0012   INDIAN              5           10000
+
+1.2346E+15 C-002 JAMES                          SBI
+TNAGAR                    SBITN0123  INDIAN              6               0
+
+1.2346E+15 C-003 SUNITHA                        ICICI
+TNAGAR                    ICITN0232  INDIAN              4           16000
+
+
+ACCOUNT_NO CUSTO CUSTOMER_NAME                  BANK_NAME
+---------- ----- ------------------------------ -------------------------
+BRANCH_NAME               IFSC_CODE  CITIZENSHI   INTEREST INITIAL_DEPOSIT
+------------------------- ---------- ---------- ---------- ---------------
+1.2346E+15 C-004 RAMESH                         HDFC
+VALASARAVAKKAM            HDVL0012   INDIAN              7               0
+
+1.2346E+15 C-005 KUMAR                          SBI
+SAIDAPET                  SBISD0113  INDIAN              8           20000
+
+
+
+13.
+
+
+SELECT CUSP.CUSTOMER_ID, CUSP.CUSTOMER_NAME, CUSP.DATE_OF_BIRTH, CUSP.GUARDIAN_NAME, CUSP.CONTACT_NO, CUSP.MAIL_ID, CUSR.REFERENCE_ACC_NAME
+FROM CUSTOMER_PERSONAL_INFO CUSP JOIN CUSTOMER_REFERENCE_INFO CUSR
+ON CUSP.CUSTOMER_ID = CUSR.CUSTOMER_ID
+WHERE CUSP.IDENTIFICATION_DOC_TYPE = 'PASSPORT';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+CONTACT_NO MAIL_ID                        REFERENCE_ACC_NAME
+---------- ------------------------------ --------------------
+C-001 JOHN                           03-MAY-84 PETER
+9734526719 JOHN_123@gmail.com             RAM
+
+C-002 JAMES                          06-AUG-84 GEORGE
+9237893481 JAMES_123@gmail.com            RAGHUL
+
+C-004 RAMESH                         11-DEC-85 KRISHNAN
+9235234534 RAMESH_123@gmail.com           RAHMAN
+
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+CONTACT_NO MAIL_ID                        REFERENCE_ACC_NAME
+---------- ------------------------------ --------------------
+C-005 KUMAR                          26-APR-83 KIRAN
+9242342312 KUMAR_123@gmail.com            VIVEK
+
+
+
+14.
+
+SELECT ACC.CUSTOMER_ID, CUSP.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, ACC.INITIAL_DEPOSIT, ACC.INTEREST
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_PERSONAL_INFO CUSP
+ON ACC.CUSTOMER_ID = CUSP.CUSTOMER_ID
+WHERE ACC.INITIAL_DEPOSIT = (SELECT MAX(INITIAL_DEPOSIT) FROM ACCOUNT_INFO);
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY INITIAL_DEPOSIT
+----- ------------------------------ ---------- ---------- ---------------
+  INTEREST
+----------
+C-005 KUMAR                          1.2346E+15 SAVINGS              20000
+         8
+
+
+15.
+
+SELECT ACC.CUSTOMER_ID, CUSP.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, ACC.INTEREST, BAN.BANK_NAME
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_PERSONAL_INFO CUSP
+ON ACC.CUSTOMER_ID = CUSP.CUSTOMER_ID
+JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE=BAN.IFSC_CODE
+WHERE ACC.INTEREST = (SELECT MAX(INTEREST) FROM ACCOUNT_INFO);
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+BANK_NAME
+-------------------------
+C-005 KUMAR                          1.2346E+15 SAVINGS             8
+SBI
+
+
+16.
+
+
+SELECT ACC.CUSTOMER_ID, CUSP.CUSTOMER_NAME, ACC.ACCOUNT_NO, BAN.BANK_NAME, CUSP.CONTACT_NO, CUSP.MAIL_ID
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_PERSONAL_INFO CUSP
+ON ACC.CUSTOMER_ID = CUSP.CUSTOMER_ID
+JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE=BAN.IFSC_CODE
+WHERE CUSP.ADDRESS LIKE '%BANGALORE';
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO BANK_NAME
+----- ------------------------------ ---------- -------------------------
+CONTACT_NO MAIL_ID
+---------- ------------------------------
+C-001 JOHN                           1.2346E+15 HDFC
+9734526719 JOHN_123@gmail.com
+
+C-002 JAMES                          1.2346E+15 SBI
+9237893481 JAMES_123@gmail.com
+
+C-005 KUMAR                          1.2346E+15 SBI
+9242342312 KUMAR_123@gmail.com
+
+
+
+17.
+
+
+SELECT ACC.CUSTOMER_ID, BAN.BANK_NAME, BAN.BRANCH_NAME, BAN.IFSC_CODE, ACC.REGISTRATION_DATE, ACC.ACTIVATION_DATE
+FROM ACCOUNT_INFO ACC JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE=BAN.IFSC_CODE
+WHERE TO_CHAR(ACC.ACTIVATION_DATE,'MON') = 'MAR';
+
+
+
+CUSTO BANK_NAME                 BRANCH_NAME               IFSC_CODE
+----- ------------------------- ------------------------- ---------------
+REGISTRAT ACTIVATIO
+--------- ---------
+C-002 SBI                       TNAGAR                    SBITN0123
+12-MAR-12 17-MAR-12
+
+C-003 ICICI                     TNAGAR                    ICITN0232
+15-MAR-12 20-MAR-12
+
+
+18.
+
+
+SELECT ((ACC.INTEREST/100)*INITIAL_DEPOSIT) interest_name, ACC.CUSTOMER_ID, CUS.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, ACC.INTEREST, ACC.INITIAL_DEPOSIT
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_PERSONAL_INFO CUS
+ON ACC.CUSTOMER_ID=CUS.CUSTOMER_ID;
+
+
+INTEREST_NAME CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+------------- ----- ------------------------------ ---------- ----------
+  INTEREST INITIAL_DEPOSIT
+---------- ---------------
+          500 C-001 JOHN                           1.2346E+15 SAVINGS
+         5           10000
+
+            0 C-002 JAMES                          1.2346E+15 SALARY
+         6               0
+
+          640 C-003 SUNITHA                        1.2346E+15 SAVINGS
+         4           16000
+
+
+INTEREST_NAME CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+------------- ----- ------------------------------ ---------- ----------
+  INTEREST INITIAL_DEPOSIT
+---------- ---------------
+            0 C-004 RAMESH                         1.2346E+15 SALARY
+         7               0
+
+         1600 C-005 KUMAR                          1.2346E+15 SAVINGS
+         8           20000
+
+
+
+19.
+
+SELECT CP.CUSTOMER_ID, CP.CUSTOMER_NAME, CP.DATE_OF_BIRTH, CP.GUARDIAN_NAME, CP.CONTACT_NO, CP.MAIL_ID, CR.REFERENCE_ACC_NAME 
+FROM CUSTOMER_PERSONAL_INFO CP JOIN CUSTOMER_REFERENCE_INFO CR
+ON CP.CUSTOMER_ID=CR.CUSTOMER_ID
+WHERE CR.REFERENCE_ACC_NAME = 'RAGHUL';
+
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+CONTACT_NO MAIL_ID                        REFERENCE_ACC_NAME
+---------- ------------------------------ --------------------
+C-002 JAMES                          06-AUG-84 GEORGE
+9237893481 JAMES_123@gmail.com            RAGHUL
+
+
+
+20.
+
+
+
+SELECT CUSTOMER_ID, CUSTOMER_NAME, CONCAT('+91-',SUBSTR(CONTACT_NO,1,3)||'-'||SUBSTR(CONTACT_NO,4,3)||'-'||SUBSTR(CONTACT_NO,7,4)) CONTACT_ISD
+FROM CUSTOMER_PERSONAL_INFO
+ORDER BY CUSTOMER_ID DESC;
+
+
+
+CUSTO CUSTOMER_NAME                  CONTACT_ISD
+----- ------------------------------ ----------------
+C-005 KUMAR                          +91-924-234-2312
+C-004 RAMESH                         +91-923-523-4534
+C-003 SUNITHA                        +91-943-897-8389
+C-002 JAMES                          +91-923-789-3481
+C-001 JOHN                           +91-973-452-6719
+
+
+
+21.
+
+SELECT ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, CUS.DATE_OF_BIRTH, CUS.GUARDIAN_NAME
+	,CUS.CONTACT_NO, CUS.MAIL_ID, CUS.GENDER, CUSR.REFERENCE_ACC_NAME, CUSR.REFERENCE_ACC_NO, ACC.REGISTRATION_DATE, ACC.ACTIVATION_DATE, (ACC.ACTIVATION_DATE-ACC.REGISTRATION_DATE) NoofdaysforActivation,
+	BAN.BANK_NAME, BAN.BRANCH_NAME, ACC.INITIAL_DEPOSIT
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_PERSONAL_INFO CUS 
+ON ACC.CUSTOMER_ID=CUS.CUSTOMER_ID 
+JOIN CUSTOMER_REFERENCE_INFO CUSR
+ON ACC.CUSTOMER_ID = CUSR.CUSTOMER_ID
+JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE = BAN.IFSC_CODE
+
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SALARY     C-004 RAMESH                         11-DEC-85
+KRISHNAN                       9235234534 RAMESH_123@gmail.com           M
+RAHMAN                     9.8765E+14 05-APR-12 10-APR-12                     5
+HDFC                      VALASARAVAKKAM                          0
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-001 JOHN                           03-MAY-84
+PETER                          9734526719 JOHN_123@gmail.com             M
+RAM                        9.8765E+14 23-FEB-12 28-FEB-12                     5
+HDFC                      VALASARAVAKKAM                      10000
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SALARY     C-002 JAMES                          06-AUG-84
+GEORGE                         9237893481 JAMES_123@gmail.com            M
+RAGHUL                     9.8765E+14 12-MAR-12 17-MAR-12                     5
+SBI                       TNAGAR                                  0
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-003 SUNITHA                        06-NOV-84
+VINOD                          9438978389 SUNITHA_123@gmail.com          F
+GOKUL                      9.8765E+14 15-MAR-12 20-MAR-12                     5
+ICICI                     TNAGAR                              16000
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-005 KUMAR                          26-APR-83
+KIRAN                          9242342312 KUMAR_123@gmail.com            M
+VIVEK                      9.8765E+14 12-APR-12 17-APR-12                     5
+SBI                       SAIDAPET                            20000
+
+
+
+22.
+
+
+
+SELECT CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, CUS.GUARDIAN_NAME, CUS.IDENTIFICATION_DOC_TYPE, CUSR.REFERENCE_ACC_NAME, ACC.ACCOUNT_TYPE, ACC.IFSC_CODE, BAN.BANK_NAME, ROUND(ACC.INITIAL_DEPOSIT+ACC.INTEREST) CURRENT_BALANCE
+FROM ACCOUNT_INFO ACC JOIN CUSTOMER_REFERENCE_INFO CUSR
+ON ACC.CUSTOMER_ID=CUSR.CUSTOMER_ID
+JOIN CUSTOMER_PERSONAL_INFO CUS
+ON ACC.CUSTOMER_ID=CUS.CUSTOMER_ID
+JOIN BANK_INFO BAN
+ON ACC.IFSC_CODE=BAN.IFSC_CODE
+WHERE ACC.ACCOUNT_TYPE = 'SAVINGS';
+
+
+
+
+
+
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+IDENTIFICATION_DOC_T REFERENCE_ACC_NAME   ACCOUNT_TY IFSC_CODE
+-------------------- -------------------- ---------- ----------
+BANK_NAME                 CURRENT_BALANCE
+------------------------- ---------------
+C-001 JOHN                           PETER
+PASSPORT             RAM                  SAVINGS    HDVL0012
+HDFC                                10005
+
+C-003 SUNITHA                        VINOD
+VOTER-ID             GOKUL                SAVINGS    ICITN0232
+ICICI                               16004
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+IDENTIFICATION_DOC_T REFERENCE_ACC_NAME   ACCOUNT_TY IFSC_CODE
+-------------------- -------------------- ---------- ----------
+BANK_NAME                 CURRENT_BALANCE
+------------------------- ---------------
+
+C-005 KUMAR                          KIRAN
+PASSPORT             VIVEK                SAVINGS    SBISD0113
+SBI                                 20008
+
+
+
+
+23.
+
+
+SELECT CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, ACC.INTEREST, ACC.INITIAL_DEPOSIT,
+CASE INITIAL_DEPOSIT
+WHEN 10000 THEN 'AVERAGE'
+WHEN 20000 THEN 'HIGH'
+WHEN 16000 THEN 'MODERATE'
+WHEN 5000 THEN 'LOW'
+WHEN 0 THEN 'VERY LOW'
+ELSE 'INVALID' END "Deposit_Status"
+FROM CUSTOMER_PERSONAL_INFO CUS JOIN ACCOUNT_INFO ACC
+ON CUS.CUSTOMER_ID=ACC.CUSTOMER_ID;
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+INITIAL_DEPOSIT Deposit_
+--------------- --------
+C-001 JOHN                           1.2346E+15 SAVINGS             5
+          10000 AVERAGE
+
+C-002 JAMES                          1.2346E+15 SALARY              6
+              0 VERY LOW
+
+C-003 SUNITHA                        1.2346E+15 SAVINGS             4
+          16000 MODERATE
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+INITIAL_DEPOSIT Deposit_
+--------------- --------
+C-004 RAMESH                         1.2346E+15 SALARY              7
+              0 VERY LOW
+
+C-005 KUMAR                          1.2346E+15 SAVINGS             8
+          20000 HIGH
+
+
+
+
+
+
+
+24.
+
+SELECT CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.ACCOUNT_TYPE, BAN.BANK_NAME, BAN.IFSC_CODE, ACC.INITIAL_DEPOSIT,
+CASE ACCOUNT_TYPE
+WHEN 'SAVINGS' THEN ROUND((INTEREST+(INTEREST*10/100)),2)
+ELSE INTEREST END "NEW_INTEREST"
+FROM CUSTOMER_PERSONAL_INFO CUS
+INNER JOIN ACCOUNT_INFO ACC
+ON CUS.CUSTOMER_ID=ACC.CUSTOMER_ID
+INNER JOIN BANK_INFO BAN
+ON BAN.IFSC_CODE=ACC.IFSC_CODE
+WHERE CUS.CUSTOMER_NAME LIKE 'J%'
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+----- ------------------------------ ---------- ----------
+BANK_NAME                 IFSC_CODE       INITIAL_DEPOSIT NEW_INTEREST
+------------------------- --------------- --------------- ------------
+C-001 JOHN                           1.2346E+15 SAVINGS
+HDFC                      HDVL0012                  10000          5.5
+
+C-002 JAMES                          1.2346E+15 SALARY
+SBI                       SBITN0123                     0            6
+
+
+
+25.
+
+
+SELECT CUS.CUSTOMER_ID, CUS.CUSTOMER_NAME, ACC.ACCOUNT_NO, ACC.INITIAL_DEPOSIT,
+CASE 
+WHEN INITIAL_DEPOSIT=0 THEN '0%'
+WHEN INITIAL_DEPOSIT<=10000 THEN '3%'
+WHEN INITIAL_DEPOSIT>10000 AND INITIAL_DEPOSIT<20000 THEN '5%'
+WHEN INITIAL_DEPOSIT>=20000 AND INITIAL_DEPOSIT<=30000 THEN '7%'
+WHEN INITIAL_DEPOSIT>30000 THEN '10%' END "taxPercentage"
+FROM CUSTOMER_PERSONAL_INFO CUS
+JOIN ACCOUNT_INFO ACC
+ON CUS.CUSTOMER_ID=ACC.CUSTOMER_ID
+
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO INITIAL_DEPOSIT tax
+----- ------------------------------ ---------- --------------- ---
+C-001 JOHN                           1.2346E+15           10000 3%
+C-002 JAMES                          1.2346E+15               0 0%
+C-003 SUNITHA                        1.2346E+15           16000 5%
+C-004 RAMESH                         1.2346E+15               0 0%
+C-005 KUMAR                          1.2346E+15           20000 7%
